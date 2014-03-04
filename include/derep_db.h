@@ -65,7 +65,17 @@ void sort_db(derep_db* db);
 */
 void write_output(derep_db* db, char* fasta, char* map);
 
-// void gather_derep_db(derep_db* db, int my_rank, int comm_sz);
+/*
+    Collects all the information about the derep_db spread across multiple
+    processes in the process with rank 0
+
+    Inputs:
+        db: the local derep_db - will be modified in place
+        my_rank: process rank
+        comm_sz: the number of processes
+*/
+void gather_derep_db(derep_db* db, int my_rank, int comm_sz);
+
 // void merge_derep_dbs(derep_db* db1, derep_db* db2);
 
 #endif

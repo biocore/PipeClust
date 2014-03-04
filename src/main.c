@@ -117,18 +117,32 @@ int main(int argc, char** argv){
     
     // Execute the commands
     if(derep_flag){
+        // Executes de-replication
         derep_db* db = NULL;
         if(comm_sz == 1)
             db = serial_dereplication(&argv[optind], num_files);
         else
-            error_handler(FATAL_ERROR, "Only serial de-replication is currently supported");
-        if(sort_flag)
-            // Sort the database by abundance
-            sort_db(db);
-        // Write the output files
-        write_output(db, fasta, map);
-        // Destroy the sequence DB
-        destroy_derep_db(db);
+            db = parallel_dereplication(&argv[optind], num_files, my_rank, comm_sz);
+        // At this point, only process with rank 0 has the
+        // complete de-replication database
+        if(my_rank == 0){
+            // Write a info message with the number of sequence read and the
+            // number of unique sequences
+            error_handler(INFO_MSG, "%d total sequences, %d unique sequences", db->count, db->unique);
+            if(sort_flag)
+                // Sort the database by abundance
+                sort_db(db);
+            // Write the output files
+            // TODO: probably remove when implementing further clustering steps
+            write_output(db, fasta, map);
+            // Destroy the sequence DB
+            // TODO: probably remove when implementing further clustering steps
+            destroy_derep_db(db);
+        }
+        else{
+            // Destroy the sequence DB
+            destroy_derep_db(db);
+        }
     }
     
     // Shut down MPI

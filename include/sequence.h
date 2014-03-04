@@ -46,4 +46,7 @@ void write_sequence(sequence* seq, FILE* fd);
 */
 void free_sequence(sequence* seq);
 
+/* Hackish - will revisit later */
+void restore_counter();
+
 #endif

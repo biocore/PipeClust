@@ -134,3 +134,8 @@ void free_sequence(sequence* seq){
     free(seq->sequence);
     free(seq);
 }
+
+/* Hackish - will revisit later */
+void restore_counter(){
+    CURR_SEQ = 0;
+}
